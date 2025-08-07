@@ -137,8 +137,12 @@ class PackageWriter {
         }
         
         // Generate new dependencies
-        let newDependencyLines = newDependencies.map { dependency in
-            "        .package(path: \"\(dependency)\")"
+        let newDependencyLines = newDependencies.enumerated().map { index, dependency in
+            if index == newDependencies.count - 1 {
+                return "        .package(path: \"\(dependency)\")"
+            } else {
+                return "        .package(path: \"\(dependency)\"),"
+            }
         }
         
         // Replace dependencies section
@@ -291,25 +295,25 @@ class DependencyUpdater {
     }
     
     func updateAllDependencies() {
-        print("🔧 Starting dependency update...")
+        print("🔧 Starting dependency setup...")
         
-        // 1. Update Infrastructure/SharedInfrastructure
-        updateSharedInfrastructure()
+        // 1. Setup Infrastructure/SharedInfrastructure with @_exported import
+        setupSharedInfrastructure()
         
-        // 2. Update */Foundation/SharedFoundation
-        updateSharedFoundation()
+        // 2. Setup */Foundation/SharedFoundation
+        setupSharedFoundation()
         
-        // 3. Update */Foundation/* (except SharedFoundation)
-        updateFoundationModules()
+        // 3. Setup */Foundation/* (except SharedFoundation)
+        setupFoundationModules()
         
-        // 4. Update all Feature modules
-        updateFeatureModules()
+        // 4. Setup all Feature modules
+        setupFeatureModules()
         
-        print("✅ Dependency update completed!")
+        print("✅ Dependency setup completed!")
     }
     
-    private func updateSharedInfrastructure() {
-        print("📦 Updating Infrastructure/SharedInfrastructure...")
+    private func setupSharedInfrastructure() {
+        print("📦 Setting up Infrastructure/SharedInfrastructure...")
         
         let sharedInfraPath = "\(workspacePath)/Infrastructure/SharedInfrastructure/Package.swift"
         guard let package = PackageParser.parsePackage(at: sharedInfraPath) else {
@@ -327,11 +331,14 @@ class DependencyUpdater {
         let newContent = PackageWriter.updatePackage(package, with: dependencyPaths)
         try? newContent.write(toFile: sharedInfraPath, atomically: true, encoding: .utf8)
         
-        print("✅ Updated SharedInfrastructure with \(dependencyPaths.count) dependencies")
+        // Setup @_exported import in SharedInfrastructure.swift
+        setupSharedInfrastructureExports()
+        
+        print("✅ Setup SharedInfrastructure with \(dependencyPaths.count) dependencies")
     }
     
-    private func updateSharedFoundation() {
-        print("📦 Updating */Foundation/SharedFoundation...")
+    private func setupSharedFoundation() {
+        print("📦 Setting up */Foundation/SharedFoundation...")
         
         let sharedFoundationPaths = findSharedFoundationModules()
         
@@ -349,12 +356,12 @@ class DependencyUpdater {
             let newContent = PackageWriter.updatePackage(package, with: dependencyPaths)
             try? newContent.write(toFile: path, atomically: true, encoding: .utf8)
             
-            print("✅ Updated \(package.name) with \(dependencyPaths.count) dependencies")
+            print("✅ Setup \(package.name) with \(dependencyPaths.count) dependencies")
         }
     }
     
-    private func updateFoundationModules() {
-        print("📦 Updating */Foundation/* (except SharedFoundation)...")
+    private func setupFoundationModules() {
+        print("📦 Setting up */Foundation/* (except SharedFoundation)...")
         
         let foundationModules = findFoundationModules()
         
@@ -383,12 +390,15 @@ class DependencyUpdater {
             let finalContent = PackageWriter.updateTargetDependencies(package, with: testTargetDependencies)
             try? finalContent.write(toFile: path, atomically: true, encoding: .utf8)
             
-            print("✅ Updated \(package.name) with SharedInfrastructure dependency")
+            // Setup import statement in source files
+            setupFoundationModuleImports(path: path, packageName: package.name)
+            
+            print("✅ Setup \(package.name) with SharedInfrastructure dependency")
         }
     }
     
-    private func updateFeatureModules() {
-        print("📦 Updating Feature modules...")
+    private func setupFeatureModules() {
+        print("📦 Setting up Feature modules...")
         
         let featureModules = findFeatureModules()
         
@@ -418,7 +428,10 @@ class DependencyUpdater {
                 let finalContent = PackageWriter.updateTargetDependencies(package, with: testTargetDependencies)
                 try? finalContent.write(toFile: path, atomically: true, encoding: .utf8)
                 
-                print("✅ Updated \(package.name) with SharedFoundation dependency")
+                // Setup import statement in source files
+                setupFeatureModuleImports(path: path, packageName: package.name)
+                
+                print("✅ Setup \(package.name) with SharedFoundation dependency")
             }
         }
     }
@@ -464,6 +477,104 @@ class DependencyUpdater {
     private func findSharedFoundationInWorkspace(_ workspacePath: String) -> String? {
         let packageFiles = FileSystemHelper.findPackageFiles(in: workspacePath)
         return packageFiles.first { $0.contains("SharedFoundation") && $0.contains("Foundation") }
+    }
+    
+    // MARK: - Setup Methods
+    
+    private func setupSharedInfrastructureExports() {
+        let sharedInfraSwiftPath = "\(workspacePath)/Infrastructure/SharedInfrastructure/Sources/SharedInfrastructure/SharedInfrastructure.swift"
+        
+        // Find all Infrastructure modules for @_exported import
+        let infrastructureModules = findInfrastructureModules()
+        let moduleNames = infrastructureModules.compactMap { path -> String? in
+            let components = path.components(separatedBy: "/")
+            // Get the directory name (second to last component)
+            if components.count >= 2 {
+                return components[components.count - 2]
+            }
+            return nil
+        }
+        
+        var exportLines: [String] = []
+        for moduleName in moduleNames {
+            exportLines.append("@_exported import \(moduleName)")
+        }
+        
+        let content = """
+        // The Swift Programming Language
+        // https://docs.swift.org/swift-book
+        
+        \(exportLines.joined(separator: "\n"))
+        """
+        
+        try? content.write(toFile: sharedInfraSwiftPath, atomically: true, encoding: .utf8)
+    }
+    
+    private func setupFoundationModuleImports(path: String, packageName: String) {
+        let sourcesPath = path.replacingOccurrences(of: "/Package.swift", with: "/Sources/\(packageName)")
+        let fileManager = FileManager.default
+        
+        guard fileManager.fileExists(atPath: sourcesPath) else { return }
+        
+        do {
+            let contents = try fileManager.contentsOfDirectory(atPath: sourcesPath)
+            for item in contents {
+                if item.hasSuffix(".swift") {
+                    let swiftFilePath = "\(sourcesPath)/\(item)"
+                    setupImportInSwiftFile(swiftFilePath, importModule: "SharedInfrastructure")
+                }
+            }
+        } catch {
+            print("Error reading sources directory: \(error)")
+        }
+    }
+    
+    private func setupFeatureModuleImports(path: String, packageName: String) {
+        let sourcesPath = path.replacingOccurrences(of: "/Package.swift", with: "/Sources/\(packageName)")
+        let fileManager = FileManager.default
+        
+        guard fileManager.fileExists(atPath: sourcesPath) else { return }
+        
+        do {
+            let contents = try fileManager.contentsOfDirectory(atPath: sourcesPath)
+            for item in contents {
+                if item.hasSuffix(".swift") {
+                    let swiftFilePath = "\(sourcesPath)/\(item)"
+                    setupImportInSwiftFile(swiftFilePath, importModule: "SharedFoundation")
+                }
+            }
+        } catch {
+            print("Error reading sources directory: \(error)")
+        }
+    }
+    
+    private func setupImportInSwiftFile(_ filePath: String, importModule: String) {
+        guard let content = try? String(contentsOfFile: filePath, encoding: .utf8) else { return }
+        
+        var lines = content.components(separatedBy: .newlines)
+        
+        // Check if import already exists
+        let hasImport = lines.contains { line in
+            line.trimmingCharacters(in: .whitespaces).hasPrefix("import \(importModule)")
+        }
+        
+        if !hasImport {
+            // Find the right place to insert import (after comments, before code)
+            var insertIndex = 0
+            for (index, line) in lines.enumerated() {
+                let trimmed = line.trimmingCharacters(in: .whitespaces)
+                if trimmed.hasPrefix("//") || trimmed.isEmpty {
+                    insertIndex = index + 1
+                } else {
+                    break
+                }
+            }
+            
+            lines.insert("import \(importModule)", at: insertIndex)
+            
+            let newContent = lines.joined(separator: "\n")
+            try? newContent.write(toFile: filePath, atomically: true, encoding: .utf8)
+        }
     }
 }
 
