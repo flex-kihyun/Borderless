@@ -12,14 +12,14 @@ let package = Package(
             targets: ["Router"]),
     ],
     dependencies: [
-        .package(path: "../../../Infrastructure/Shared")
+        .package(path: "../../../Infrastructure/SharedInfrastructure")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "Router",
-            dependencies: ["Shared"]),
+            dependencies: ["SharedInfrastructure"]),
         .testTarget(
             name: "RouterTests",
             dependencies: ["Router"]
