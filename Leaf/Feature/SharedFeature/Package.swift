@@ -4,27 +4,26 @@
 import PackageDescription
 
 let package = Package(
-    name: "SharedFoundation",
+    name: "SharedFeature",
     platforms: [.iOS(.v18)],
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
-            name: "SharedFoundation",
-            targets: ["SharedFoundation"]),
+            name: "SharedFeature",
+            targets: ["SharedFeature"]),
     ],
     dependencies: [
-        .package(path: "../AppInfo"),
-        .package(path: "../Route")
+        .package(path: "../Contract")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
-            name: "SharedFoundation",
-            dependencies: ["AppInfo", "Route"]),
+            name: "SharedFeature",
+            dependencies: ["Contract"]),
         .testTarget(
-            name: "SharedFoundationTests",
-            dependencies: ["SharedFoundation"]
+            name: "SharedFeatureTests",
+            dependencies: ["SharedFeature"]
         ),
     ]
 )

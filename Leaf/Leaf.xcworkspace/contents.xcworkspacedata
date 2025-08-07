@@ -21,17 +21,27 @@
          location = "group:SharedFoundation">
       </FileRef>
       <FileRef
-         location = "group:Route">
+         location = "group:AppInfo">
       </FileRef>
       <FileRef
-         location = "group:AppInfo">
+         location = "group:Route">
       </FileRef>
    </Group>
    <Group
       location = "group:Feature"
       name = "Feature">
       <FileRef
+         location = "group:SharedFeature">
+      </FileRef>
+      <FileRef
          location = "group:Contract">
+      </FileRef>
+   </Group>
+   <Group
+      location = "group:App"
+      name = "App">
+      <FileRef
+         location = "group:Leaf/Leaf.xcodeproj">
       </FileRef>
    </Group>
 </Workspace>
