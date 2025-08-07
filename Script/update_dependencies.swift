@@ -180,7 +180,36 @@ class PackageWriter {
             }
         }
         
+        // Add platforms section
+        lines = addPlatformsSection(lines)
+        
         return lines.joined(separator: "\n")
+    }
+    
+    private static func addPlatformsSection(_ lines: [String]) -> [String] {
+        var updatedLines = lines
+        
+        // Check if platforms section already exists
+        let hasPlatforms = updatedLines.contains { line in
+            line.trimmingCharacters(in: .whitespaces).contains("platforms:")
+        }
+        
+        if !hasPlatforms {
+            // Find the right place to insert platforms (after name, before products)
+            var insertIndex = -1
+            for (index, line) in updatedLines.enumerated() {
+                if line.contains("name:") {
+                    insertIndex = index + 1
+                    break
+                }
+            }
+            
+            if insertIndex >= 0 {
+                updatedLines.insert("    platforms: [.iOS(.v18)],", at: insertIndex)
+            }
+        }
+        
+        return updatedLines
     }
     
     static func updateTargetDependencies(_ package: PackageInfo, with newTargetDependencies: [String: [String]]) -> String {
