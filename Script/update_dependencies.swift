@@ -480,12 +480,24 @@ class DependencyUpdater {
     
     private func findFoundationModules() -> [String] {
         let packageFiles = FileSystemHelper.findPackageFiles(in: workspacePath)
-        return packageFiles.filter { $0.contains("Foundation") && !$0.contains("SharedFoundation") }
+        let foundationModules = packageFiles.filter { $0.contains("Foundation") && !$0.contains("SharedFoundation") }
+        
+        // Filter out modules that don't exist
+        return foundationModules.filter { path in
+            let fileManager = FileManager.default
+            return fileManager.fileExists(atPath: path)
+        }
     }
     
     private func findFoundationModules(in workspacePath: String) -> [String] {
         let packageFiles = FileSystemHelper.findPackageFiles(in: workspacePath)
-        return packageFiles.filter { $0.contains("Foundation") && !$0.contains("SharedFoundation") }
+        let foundationModules = packageFiles.filter { $0.contains("Foundation") && !$0.contains("SharedFoundation") }
+        
+        // Filter out modules that don't exist
+        return foundationModules.filter { path in
+            let fileManager = FileManager.default
+            return fileManager.fileExists(atPath: path)
+        }
     }
     
     private func findFeatureModules() -> [String] {

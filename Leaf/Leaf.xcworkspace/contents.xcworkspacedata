@@ -21,7 +21,7 @@
          location = "group:SharedFoundation">
       </FileRef>
       <FileRef
-         location = "group:Router">
+         location = "group:Route">
       </FileRef>
       <FileRef
          location = "group:AppInfo">

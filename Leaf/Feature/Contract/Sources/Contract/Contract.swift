@@ -3,10 +3,3 @@
 
 import SwiftUI
 import SharedFoundation
-
-public struct Contract {
-    @ViewBuilder
-    static func build(_ route: ContractRoute) -> some View {
-        
-    }
-}
