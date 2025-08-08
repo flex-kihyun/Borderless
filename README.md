@@ -104,6 +104,42 @@ A 피처에서 B 피처로 화면 전환이 필요할 때:
     - Foundation에서
         - import SharedInfrastructure
 
+## 의존성 그래프
+
+```mermaid
+graph TD
+    Leaf --> SharedFeature
+    Leaf --> SharedFoundation
+    Leaf --> SharedInfrastructure
+    
+    SharedFeature --> Contract
+    
+    Contract --> SharedFoundation
+    
+    SharedFoundation --> Route
+    SharedFoundation --> AppInfo
+    SharedFoundation --> SharedInfrastructure
+    
+    Route --> SharedInfrastructure
+    AppInfo --> SharedInfrastructure
+    
+    SharedInfrastructure --> Core
+    SharedInfrastructure --> Network
+    
+    %% 스타일링
+    classDef appLayer fill:#e1f5fe
+    classDef sharedLayer fill:#f3e5f5
+    classDef featureLayer fill:#e8f5e8
+    classDef foundationLayer fill:#fff3e0
+    classDef infrastructureLayer fill:#fce4ec
+    
+    class Leaf appLayer
+    class SharedFeature,SharedFoundation,SharedInfrastructure sharedLayer
+    class Contract featureLayer
+    class Route,AppInfo foundationLayer
+    class Core,Network infrastructureLayer
+```
+
 ## 프로젝트 구조
 
 ```

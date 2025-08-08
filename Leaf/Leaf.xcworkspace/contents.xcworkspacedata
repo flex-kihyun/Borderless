@@ -2,16 +2,20 @@
 <Workspace
    version = "1.0">
    <Group
-      location = "container:../Infrastructure"
-      name = "Infrastructure">
+      location = "group:App"
+      name = "App">
       <FileRef
-         location = "group:SharedInfrastructure">
+         location = "group:Leaf/Leaf.xcodeproj">
+      </FileRef>
+   </Group>
+   <Group
+      location = "group:Feature"
+      name = "Feature">
+      <FileRef
+         location = "group:SharedFeature">
       </FileRef>
       <FileRef
-         location = "group:Network">
-      </FileRef>
-      <FileRef
-         location = "group:Core">
+         location = "group:Contract">
       </FileRef>
    </Group>
    <Group
@@ -28,20 +32,16 @@
       </FileRef>
    </Group>
    <Group
-      location = "group:Feature"
-      name = "Feature">
+      location = "container:../Infrastructure"
+      name = "Infrastructure">
       <FileRef
-         location = "group:SharedFeature">
+         location = "group:SharedInfrastructure">
       </FileRef>
       <FileRef
-         location = "group:Contract">
+         location = "group:Network">
       </FileRef>
-   </Group>
-   <Group
-      location = "group:App"
-      name = "App">
       <FileRef
-         location = "group:Leaf/Leaf.xcodeproj">
+         location = "group:Core">
       </FileRef>
    </Group>
 </Workspace>
