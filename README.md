@@ -1,5 +1,9 @@
 # Borderless
 
+<div align="center">
+  <img src="docs/branding.svg" alt="Borderless Architecture" width="800"/>
+</div>
+
 Borderless는 명확한 관심사 분리와 엄격한 의존성 규칙을 구현하는 계층적 의존성 구조를 가진 모듈형 iOS 애플리케이션 아키텍처입니다.
 
 ## 아키텍처 개요

@@ -1,0 +1,58 @@
+<svg width="800" height="200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+    
+    <linearGradient id="moduleGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4facfe;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00f2fe;stop-opacity:1" />
+    </linearGradient>
+    
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000000" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <!-- Background -->
+  <rect width="800" height="200" fill="url(#bgGradient)"/>
+  
+  <!-- Modular blocks representing the architecture -->
+  <g transform="translate(50, 50)">
+    <!-- Infrastructure Layer -->
+    <rect x="0" y="120" width="80" height="40" rx="8" fill="#e1f5fe" stroke="#0288d1" stroke-width="2" filter="url(#shadow)"/>
+    <text x="40" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#0277bd">Core</text>
+    
+    <rect x="100" y="120" width="80" height="40" rx="8" fill="#e1f5fe" stroke="#0288d1" stroke-width="2" filter="url(#shadow)"/>
+    <text x="140" y="145" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#0277bd">Network</text>
+    
+    <!-- Foundation Layer -->
+    <rect x="50" y="70" width="80" height="40" rx="8" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2" filter="url(#shadow)"/>
+    <text x="90" y="95" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6a1b9a">Route</text>
+    
+    <rect x="150" y="70" width="80" height="40" rx="8" fill="#f3e5f5" stroke="#7b1fa2" stroke-width="2" filter="url(#shadow)"/>
+    <text x="190" y="95" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#6a1b9a">AppInfo</text>
+    
+    <!-- Feature Layer -->
+    <rect x="100" y="20" width="80" height="40" rx="8" fill="#e8f5e8" stroke="#388e3c" stroke-width="2" filter="url(#shadow)"/>
+    <text x="140" y="45" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#2e7d32">Contract</text>
+    
+    <!-- Connection lines -->
+    <line x1="40" y1="120" x2="90" y2="110" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+    <line x1="140" y1="120" x2="190" y2="110" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+    <line x1="90" y1="70" x2="140" y2="60" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+    <line x1="190" y1="70" x2="140" y2="60" stroke="#666" stroke-width="2" stroke-dasharray="5,5"/>
+  </g>
+  
+  <!-- Title -->
+  <text x="400" y="50" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="white">Borderless</text>
+  
+  <!-- Subtitle -->
+  <text x="400" y="180" text-anchor="middle" font-family="Arial, sans-serif" font-size="16" fill="white" opacity="0.9">Modular iOS Architecture</text>
+  
+  <!-- Decorative elements -->
+  <circle cx="650" cy="80" r="30" fill="none" stroke="white" stroke-width="3" opacity="0.3"/>
+  <circle cx="680" cy="110" r="20" fill="none" stroke="white" stroke-width="2" opacity="0.2"/>
+  <circle cx="620" cy="110" r="15" fill="none" stroke="white" stroke-width="2" opacity="0.2"/>
+</svg>
